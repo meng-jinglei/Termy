@@ -1,7 +1,11 @@
 import { app, BrowserWindow } from 'electron';
 import { join } from 'path';
+import { PtyManager } from './pty/manager';
+import { detectShells } from './pty/shell-detector';
+import { registerIpcHandlers } from './ipc';
 
 let mainWindow: BrowserWindow | null = null;
+const ptyManager = new PtyManager();
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -15,6 +19,9 @@ function createWindow() {
     },
   });
 
+  // Register IPC handlers and detect shells
+  registerIpcHandlers(mainWindow, ptyManager);
+
   if (process.env.ELECTRON_RENDERER_URL) {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
   } else {
@@ -26,4 +33,8 @@ app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
   app.quit();
+});
+
+app.on('before-quit', () => {
+  ptyManager.killAll();
 });

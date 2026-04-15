@@ -1,13 +1,23 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { IPC_CHANNELS, IpcPtySpawnArgs, IpcPtyWriteArgs, IpcPtyResizeArgs, IpcPtyKillArgs, IpcPtyDataEvent, IpcPtyExitEvent } from '../shared/ipc-channels';
 
 contextBridge.exposeInMainWorld('terminalAPI', {
-  send: (channel: string, data: unknown) => {
-    ipcRenderer.send(channel, data);
+  spawn: (args: IpcPtySpawnArgs): Promise<{ sessionId: string }> => {
+    return ipcRenderer.invoke(IPC_CHANNELS.PTY_SPAWN, args);
   },
-  on: (channel: string, callback: (...args: unknown[]) => void) => {
-    ipcRenderer.on(channel, (_event, ...args) => callback(...args));
+  write: (args: IpcPtyWriteArgs): void => {
+    ipcRenderer.send(IPC_CHANNELS.PTY_WRITE, args);
   },
-  invoke: (channel: string, ...args: unknown[]) => {
-    return ipcRenderer.invoke(channel, ...args);
+  resize: (args: IpcPtyResizeArgs): void => {
+    ipcRenderer.send(IPC_CHANNELS.PTY_RESIZE, args);
+  },
+  kill: (args: IpcPtyKillArgs): void => {
+    ipcRenderer.send(IPC_CHANNELS.PTY_KILL, args);
+  },
+  onData: (callback: (event: IpcPtyDataEvent) => void): void => {
+    ipcRenderer.on(IPC_CHANNELS.PTY_DATA, (_event, args: IpcPtyDataEvent) => callback(args));
+  },
+  onExit: (callback: (event: IpcPtyExitEvent) => void): void => {
+    ipcRenderer.on(IPC_CHANNELS.PTY_EXIT, (_event, args: IpcPtyExitEvent) => callback(args));
   },
 });
