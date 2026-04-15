@@ -1,0 +1,30 @@
+{
+  "name": "termy",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "rebuild": "npx @electron/rebuild",
+    "package": "npm run build && electron-builder",
+    "verify-build": "node scripts/verify-build-tools.js"
+  },
+  "dependencies": {
+    "@lydell/node-pty": "^1.2.0-beta.12",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/addon-search": "^0.16.0",
+    "@xterm/addon-webgl": "^0.19.0",
+    "@xterm/xterm": "^6.0.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.3",
+    "@types/node": "^25.6.0",
+    "electron": "^41.2.0",
+    "electron-builder": "^26.8.1",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.4"
+  }
+}
