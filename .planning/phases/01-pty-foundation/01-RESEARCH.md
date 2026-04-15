@@ -713,22 +713,13 @@ export default defineConfig({
 | A4 | WSL availability check via `wsl --list --quiet` is reliable on Windows 11 | Shell Detection Pattern | WSL may be installed but not have Ubuntu distro — need more robust detection |
 | A5 | @xterm/addon-fit 0.11.0, @xterm/addon-webgl 0.19.0, @xterm/addon-search 0.16.0 are compatible with @xterm/xterm 6.0.0 | Standard Stack | Version incompatibility would cause runtime errors — must verify after install |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Electron 41 + node-pty 1.1.0 exact build outcome**
-   - What we know: Issue #728 was CLOSED (was about Electron 33 + node-pty 1.0.0 on Linux); Electron 41 ships Node.js v24.14.0 which is newer than what node-pty 1.1.0 was tested against
-   - What's unclear: Whether the rebuild succeeds on Windows 11 specifically with Electron 41
-   - Recommendation: Phase 1 MUST start with build verification spike (D-09) — this is the first task
+1. **Electron 41 + node-pty 1.1.0 exact build outcome** — **RESOLVED**: Answered by build verification spike (D-09) in Plan 01-01 Task 2. The spike will confirm whether node-pty 1.1.0 rebuilds successfully against Electron 41 on Windows 11. Fallback path to @lydell/node-pty 1.2.0-beta.12 documented in Plan 01-01.
 
-2. **@xterm/addon-image compatibility**
-   - What we know: Known rendering bug in 6.0 (Issue #5644 — parsed but not rendered to canvas)
-   - What's unclear: Whether a patch release (6.0.1+) has fixed it
-   - Recommendation: Defer addon-image to Phase 2+ (v2 requirement ADV-05 Sixel)
+2. **@xterm/addon-image compatibility** — **RESOLVED**: Deferred to Phase 2+. Known rendering bug (Issue #5644) means addon-image is not needed for Phase 1 scope. Plan 01-03 only uses fit, webgl, and search addons.
 
-3. **Vite + node-pty production bundling**
-   - What we know: node-pty must be externalized (not bundled) because it contains native `.node` binaries
-   - What's unclear: Whether electron-vite's `externalizeDepsPlugin` handles this automatically or needs explicit `external: ['node-pty']` in rollupOptions
-   - Recommendation: Verify during build spike; add explicit external config as safety net
+3. **Vite + node-pty production bundling** — **RESOLVED**: Answered by build verification spike (D-09) in Plan 01-01 Task 2. electron-vite's `externalizeDepsPlugin` should handle this, but Plan 01-01 explicitly configures `external: ['node-pty']` as safety net.
 
 ## Environment Availability
 
