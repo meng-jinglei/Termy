@@ -4,6 +4,7 @@ export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],
     build: {
+      outDir: 'dist/main',
       rollupOptions: {
         external: ['node-pty', '@lydell/node-pty'],
       },
@@ -11,8 +12,14 @@ export default defineConfig({
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
+    build: {
+      outDir: 'dist/preload',
+    },
   },
   renderer: {
+    build: {
+      outDir: 'dist/renderer',
+    },
     optimizeDeps: {
       exclude: [
         '@xterm/xterm',
